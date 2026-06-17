@@ -1,0 +1,19 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="800" rx="32" fill="#0f172a" />
+  <rect x="80" y="80" width="1040" height="640" rx="28" fill="url(#paint0_linear)" opacity="0.8" />
+  <path d="M220 620C220 525.453 297.453 448 392 448H808C902.547 448 980 525.453 980 620V632C980 703.375 922.375 761 851 761H349C277.625 761 220 703.375 220 632V620Z" fill="#111827" />
+  <path d="M315 240C315 186.393 358.393 143 412 143H788C841.607 143 885 186.393 885 240V560H315V240Z" fill="#1e293b" />
+  <path d="M412 160C372.386 160 340 192.386 340 232C340 271.614 372.386 304 412 304C451.614 304 484 271.614 484 232C484 192.386 451.614 160 412 160Z" fill="#f8fafc" />
+  <path d="M606 160C566.386 160 534 192.386 534 232C534 271.614 566.386 304 606 304C645.614 304 678 271.614 678 232C678 192.386 645.614 160 606 160Z" fill="#f8fafc" />
+  <path d="M460 510C460 475.823 487.823 448 522 448H678C712.177 448 740 475.823 740 510V542C740 560.881 724.881 576 706 576H494C475.119 576 460 560.881 460 542V510Z" fill="#f8fafc" />
+  <rect x="340" y="380" width="520" height="30" rx="15" fill="#f8fafc" />
+  <rect x="340" y="430" width="420" height="24" rx="12" fill="#f8fafc" />
+  <rect x="340" y="470" width="520" height="24" rx="12" fill="#f8fafc" />
+  <rect x="340" y="510" width="370" height="24" rx="12" fill="#f8fafc" />
+  <defs>
+    <linearGradient id="paint0_linear" x1="1200" y1="80" x2="0" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563eb" />
+      <stop offset="1" stop-color="#4f46e5" />
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,5 @@
+com\mhfacilities\controller\LoginRequest.class
+com\mhfacilities\controller\AuthController.class
+com\mhfacilities\entity\Usuario.class
+com\mhfacilities\repository\UsuarioRepository.class
+com\mhfacilities\MhFacilitiesApplication.class

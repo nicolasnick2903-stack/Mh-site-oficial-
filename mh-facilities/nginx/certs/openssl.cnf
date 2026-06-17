@@ -1,0 +1,21 @@
+﻿[ req ]
+default_bits        = 2048
+prompt              = no
+default_md          = sha256
+distinguished_name  = dn
+x509_extensions     = v3_req
+
+[ dn ]
+C = BR
+ST = Sao Paulo
+L = Sao Paulo
+O = MH Facilities
+OU = Desenvolvimento
+CN = www.mhfacilities.com
+
+[ v3_req ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = www.mhfacilities.com
+DNS.2 = mhfacilities.com
