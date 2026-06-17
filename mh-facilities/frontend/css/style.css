@@ -23,6 +23,7 @@ body {
     font-family: "Inter", Arial, sans-serif;
     background: var(--paper);
     color: var(--ink);
+    overflow-x: hidden;
 }
 
 img {
@@ -414,6 +415,7 @@ a {
 .quote-form select,
 .quote-form textarea {
     width: 100%;
+    max-width: 100%;
     min-height: 46px;
     border: 1px solid var(--line);
     border-radius: 8px;
@@ -487,6 +489,7 @@ a {
         min-height: auto;
         padding: 14px 0;
         flex-wrap: wrap;
+        gap: 14px;
     }
 
     .nav-links {
@@ -509,28 +512,71 @@ a {
         grid-template-columns: 1fr;
     }
 
+    .contact-section,
+    .careers-section,
+    .about-section {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
     .stats-band div {
         padding: 28px 20px;
     }
 }
 
 @media (max-width: 620px) {
+    .nav-shell {
+        width: min(100% - 24px, 1160px);
+        align-items: flex-start;
+    }
+
     .nav-action {
         display: none;
+    }
+
+    .brand-logo {
+        width: 38px;
+        height: 38px;
     }
 
     .brand span {
         font-size: 0.98rem;
     }
 
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        overflow: visible;
+        padding-bottom: 0;
+        font-size: 0.86rem;
+    }
+
+    .nav-links a {
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #ffffff;
+        line-height: 1;
+    }
+
     .hero-section {
-        min-height: 680px;
-        padding-top: 90px;
-        padding-bottom: 54px;
+        min-height: auto;
+        padding: 92px 16px 52px;
     }
 
     .hero-overlay {
         background: linear-gradient(180deg, rgba(7, 16, 28, 0.62), rgba(7, 16, 28, 0.9));
+    }
+
+    .hero-content h1 {
+        font-size: clamp(2rem, 11vw, 3rem);
+        line-height: 1.04;
+    }
+
+    .hero-copy {
+        margin-top: 18px;
+        font-size: 0.98rem;
+        line-height: 1.55;
     }
 
     .hero-actions,
@@ -538,24 +584,77 @@ a {
         width: 100%;
     }
 
+    .button,
+    .quote-form button {
+        min-height: 48px;
+        text-align: center;
+        white-space: normal;
+    }
+
     .section,
     .careers-section,
     .contact-section {
+        padding-left: 16px;
+        padding-right: 16px;
         padding-top: 64px;
         padding-bottom: 64px;
     }
 
-    .quote-form {
+    .section-heading h2,
+    .about-copy h2,
+    .contact-copy h2,
+    .careers-copy h2 {
+        font-size: clamp(1.75rem, 9vw, 2.35rem);
+        line-height: 1.12;
+    }
+
+    .service-card,
+    .process-grid article,
+    .about-panel {
         padding: 20px;
+    }
+
+    .quote-form {
+        width: 100%;
+        padding: 18px;
     }
 
     .career-list {
         grid-template-columns: 1fr;
     }
 
+    .floating-whatsapp {
+        right: 16px;
+        bottom: 16px;
+        width: 50px;
+        height: 50px;
+        font-size: 0.88rem;
+    }
+
     .site-footer {
         align-items: flex-start;
         flex-direction: column;
+        padding-left: 16px;
+        padding-right: 16px;
         padding-bottom: 92px;
+    }
+}
+
+@media (max-width: 380px) {
+    .nav-links {
+        font-size: 0.8rem;
+    }
+
+    .nav-links a {
+        padding: 7px 8px;
+    }
+
+    .hero-content h1 {
+        font-size: 1.9rem;
+    }
+
+    .stats-band div {
+        min-height: auto;
+        padding: 22px 16px;
     }
 }
