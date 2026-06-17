@@ -1,72 +1,47 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const loginForm = document.getElementById('login-form');
-    const loginResult = document.getElementById('login-result');
-    const registerForm = document.getElementById('register-form');
-    const registerResult = document.getElementById('register-result');
-    const registrationSuccess = document.getElementById('registration-success');
+document.addEventListener("DOMContentLoaded", function () {
+    const quoteForm = document.getElementById("quote-form");
+    const formStatus = document.getElementById("form-status");
 
-    if (loginForm && loginResult) {
-        loginForm.addEventListener('submit', async function (event) {
+    if (quoteForm) {
+        quoteForm.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const email = document.getElementById('email').value.trim();
-            const senha = document.getElementById('senha').value.trim();
-            const apiUrl = '/auth/login';
+            const formData = new FormData(quoteForm);
+            const name = String(formData.get("name") || "").trim();
+            const company = String(formData.get("company") || "").trim();
+            const service = String(formData.get("service") || "").trim();
+            const message = String(formData.get("message") || "").trim();
 
-            loginResult.textContent = 'Enviando...';
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, senha })
-                });
-
-                const text = await response.text();
-                loginResult.textContent = text;
-                loginResult.style.color = response.ok ? '#16a34a' : '#dc2626';
-            } catch (error) {
-                loginResult.textContent = 'Não foi possível conectar ao servidor.';
-                loginResult.style.color = '#dc2626';
+            if (!name || !company || !service) {
+                if (formStatus) {
+                    formStatus.textContent = "Preencha os campos obrigatorios para enviar.";
+                }
+                return;
             }
+
+            const lines = [
+                "Ola MH Facilities, gostaria de solicitar um orcamento.",
+                "",
+                "Nome: " + name,
+                "Empresa/condominio: " + company,
+                "Servico: " + service
+            ];
+
+            if (message) {
+                lines.push("Mensagem: " + message);
+            }
+
+            openWhatsApp(lines, formStatus);
         });
     }
 
-    if (registerForm && registerResult) {
-        registerForm.addEventListener('submit', async function (event) {
-            event.preventDefault();
+    function openWhatsApp(lines, statusElement) {
+        const whatsappUrl = "https://wa.me/5511992144970?text=" + encodeURIComponent(lines.join("\n"));
 
-            const nome = document.getElementById('nome').value.trim();
-            const email = document.getElementById('email-register').value.trim();
-            const telefone = document.getElementById('telefone').value.trim();
-            const senha = document.getElementById('senha-register').value.trim();
-            const apiUrl = '/auth/register';
+        if (statusElement) {
+            statusElement.textContent = "Abrindo WhatsApp...";
+        }
 
-            registerResult.textContent = 'Enviando...';
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ nome, email, telefone, senha })
-                });
-
-                const text = await response.text();
-                registerResult.textContent = text;
-                registerResult.style.color = response.ok ? '#16a34a' : '#dc2626';
-
-                if (response.ok && registrationSuccess) {
-                    registrationSuccess.classList.remove('hidden');
-                    registerForm.reset();
-                }
-            } catch (error) {
-                registerResult.textContent = 'Não foi possível conectar ao servidor.';
-                registerResult.style.color = '#dc2626';
-            }
-        });
+        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
     }
 });
