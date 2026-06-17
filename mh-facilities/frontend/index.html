@@ -23,11 +23,22 @@
                 <img src="assets/logo.png" alt="MH Facilities" class="brand-logo">
                 <span>MH Facilities</span>
             </a>
+            <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <div class="nav-links">
                 <a href="#servicos">Servi&ccedil;os</a>
                 <a href="#sobre">Sobre</a>
                 <a href="#processo">Como atuamos</a>
                 <a href="#trabalhe-conosco">Trabalhe conosco</a>
+                <a href="#contato">Contato</a>
+            </div>
+            <div id="site-menu" class="dropdown-menu" hidden>
+                <a href="#servicos">Servi&ccedil;os</a>
+                <a href="#trabalhe-conosco">Trabalhe conosco</a>
+                <a href="#area-sindico">&Aacute;rea do s&iacute;ndico</a>
                 <a href="#contato">Contato</a>
             </div>
             <a class="nav-action" href="https://wa.me/5511992144970?text=Ola%20MH%20Facilities%2C%20gostaria%20de%20solicitar%20um%20orcamento." target="_blank" rel="noopener noreferrer">WhatsApp</a>
@@ -179,6 +190,121 @@
                 <button type="submit">Enviar candidatura</button>
                 <p class="form-status">A candidatura sera enviada para mhfacilitiesseguranca@gmail.com.</p>
             </form>
+        </section>
+
+        <section id="area-sindico" class="syndic-section">
+            <div class="syndic-copy">
+                <p class="eyebrow">&Aacute;rea do s&iacute;ndico</p>
+                <h2>Atendimento direto para condom&iacute;nios clientes.</h2>
+                <p>Cadastre seus dados uma vez e acesse um painel simples para abrir chamado, relatar ocorr&ecirc;ncia ou falar com o financeiro.</p>
+            </div>
+
+            <div class="syndic-app">
+                <form id="syndic-register-form" class="quote-form syndic-card">
+                    <h3>Cadastro do s&iacute;ndico</h3>
+                    <label for="syndic-name">Nome completo</label>
+                    <input id="syndic-name" name="syndicName" type="text" placeholder="Nome do s&iacute;ndico" required>
+
+                    <label for="syndic-cpf">CPF</label>
+                    <input id="syndic-cpf" name="syndicCpf" type="text" placeholder="000.000.000-00" required>
+
+                    <label for="syndic-email">E-mail</label>
+                    <input id="syndic-email" name="syndicEmail" type="email" placeholder="email@sindico.com.br" required>
+
+                    <label for="syndic-condo">Condom&iacute;nio</label>
+                    <input id="syndic-condo" name="syndicCondo" type="text" placeholder="Nome do condom&iacute;nio" required>
+
+                    <button type="submit">Criar usu&aacute;rio</button>
+                    <p id="syndic-register-status" class="form-status" aria-live="polite"></p>
+                </form>
+
+                <div id="syndic-panel" class="syndic-panel hidden">
+                    <div class="panel-header">
+                        <div>
+                            <p class="eyebrow">Painel do s&iacute;ndico</p>
+                            <h3 id="syndic-welcome">Bem-vindo</h3>
+                            <span id="syndic-condo-label"></span>
+                        </div>
+                        <button id="syndic-reset" class="text-button" type="button">Trocar usu&aacute;rio</button>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="panel-action active" type="button" data-panel-target="ticket-form-wrap">Abrir chamado</button>
+                        <button class="panel-action" type="button" data-panel-target="occurrence-form-wrap">Relatar ocorr&ecirc;ncia</button>
+                        <button class="panel-action" type="button" data-panel-target="finance-form-wrap">Falar com financeiro</button>
+                    </div>
+
+                    <form id="ticket-form-wrap" class="quote-form panel-form" action="https://formsubmit.co/mhfacilitiesseguranca@gmail.com" method="POST">
+                        <input type="hidden" name="_subject" value="Novo chamado de condominio pelo site MH Facilities">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="Nome do sindico" data-syndic-field="name">
+                        <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
+                        <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="Condominio" data-syndic-field="condo">
+
+                        <label for="ticket-area">&Aacute;rea do chamado</label>
+                        <select id="ticket-area" name="Area do chamado" required>
+                            <option value="">Selecione</option>
+                            <option>Portaria</option>
+                            <option>Limpeza</option>
+                            <option>Recep&ccedil;&atilde;o</option>
+                            <option>Seguran&ccedil;a</option>
+                            <option>Manuten&ccedil;&atilde;o operacional</option>
+                            <option>Outro</option>
+                        </select>
+
+                        <label for="ticket-description">Descri&ccedil;&atilde;o do chamado</label>
+                        <textarea id="ticket-description" name="Descricao do chamado" rows="5" placeholder="Descreva o que precisa ser resolvido" required></textarea>
+
+                        <button type="submit">Enviar chamado</button>
+                        <p id="ticket-status" class="form-status" aria-live="polite">Enviaremos por e-mail e abriremos uma mensagem no WhatsApp.</p>
+                    </form>
+
+                    <form id="occurrence-form-wrap" class="quote-form panel-form hidden" action="https://formsubmit.co/mhfacilitiesseguranca@gmail.com" method="POST">
+                        <input type="hidden" name="_subject" value="Nova ocorrencia de condominio pelo site MH Facilities">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="Nome do sindico" data-syndic-field="name">
+                        <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
+                        <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="Condominio" data-syndic-field="condo">
+
+                        <label for="occurrence-area">&Aacute;rea da ocorr&ecirc;ncia</label>
+                        <select id="occurrence-area" name="Area da ocorrencia" required>
+                            <option value="">Selecione</option>
+                            <option>Portaria</option>
+                            <option>Limpeza</option>
+                            <option>Recep&ccedil;&atilde;o</option>
+                            <option>Seguran&ccedil;a</option>
+                            <option>Morador/visitante</option>
+                            <option>Outro</option>
+                        </select>
+
+                        <label for="occurrence-description">Relato da ocorr&ecirc;ncia</label>
+                        <textarea id="occurrence-description" name="Relato da ocorrencia" rows="5" placeholder="Descreva a ocorr&ecirc;ncia com data, local e detalhes importantes" required></textarea>
+
+                        <button type="submit">Enviar ocorr&ecirc;ncia</button>
+                        <p class="form-status">A ocorr&ecirc;ncia sera enviada para mhfacilitiesseguranca@gmail.com.</p>
+                    </form>
+
+                    <form id="finance-form-wrap" class="quote-form panel-form hidden" action="https://formsubmit.co/mhfacilitiesseguranca@gmail.com" method="POST">
+                        <input type="hidden" name="_subject" value="Contato financeiro de sindico pelo site MH Facilities">
+                        <input type="hidden" name="_captcha" value="false">
+                        <input type="hidden" name="_template" value="table">
+                        <input type="hidden" name="Nome do sindico" data-syndic-field="name">
+                        <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
+                        <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="Condominio" data-syndic-field="condo">
+
+                        <label for="finance-message">Mensagem para o financeiro</label>
+                        <textarea id="finance-message" name="Mensagem para o financeiro" rows="5" placeholder="Escreva o que precisa tratar com o financeiro" required></textarea>
+
+                        <button type="submit">Enviar ao financeiro</button>
+                        <p class="form-status">O financeiro recebera seu nome, condom&iacute;nio e mensagem por e-mail.</p>
+                    </form>
+                </div>
+            </div>
         </section>
 
         <section id="contato" class="contact-section">

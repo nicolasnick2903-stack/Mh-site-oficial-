@@ -45,6 +45,7 @@ a {
 }
 
 .nav-shell {
+    position: relative;
     width: min(1160px, calc(100% - 32px));
     min-height: 74px;
     margin: 0 auto;
@@ -75,6 +76,54 @@ a {
     gap: 24px;
     font-size: 0.94rem;
     color: var(--muted);
+}
+
+.menu-toggle {
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    width: 21px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--ink);
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% - 6px);
+    z-index: 70;
+    width: min(280px, calc(100vw - 32px));
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 13px 12px;
+    border-radius: 8px;
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+    background: var(--soft);
+    color: var(--brand);
 }
 
 .nav-links a,
@@ -343,6 +392,109 @@ a {
     color: #ffffff;
 }
 
+.syndic-section {
+    display: grid;
+    grid-template-columns: minmax(0, 0.75fr) minmax(360px, 1fr);
+    gap: 48px;
+    padding: 92px max(20px, calc((100vw - 1160px) / 2));
+    background: var(--soft);
+    color: var(--ink);
+}
+
+.syndic-copy h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    line-height: 1.08;
+    letter-spacing: 0;
+}
+
+.syndic-copy p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.68;
+}
+
+.syndic-app {
+    min-width: 0;
+}
+
+.syndic-card h3,
+.panel-header h3 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.syndic-panel {
+    display: grid;
+    gap: 18px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.panel-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 10px 26px rgba(18, 24, 38, 0.05);
+}
+
+.panel-header .eyebrow {
+    margin-bottom: 8px;
+}
+
+#syndic-condo-label {
+    display: block;
+    margin-top: 8px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.text-button {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--brand-dark);
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.panel-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.panel-action {
+    min-height: 50px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 800;
+}
+
+.panel-action.active {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #ffffff;
+}
+
+.panel-form {
+    box-shadow: 0 10px 26px rgba(18, 24, 38, 0.05);
+}
+
 .careers-section {
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
@@ -507,12 +659,14 @@ a {
     .service-grid,
     .process-grid,
     .about-section,
+    .syndic-section,
     .careers-section,
     .contact-section {
         grid-template-columns: 1fr;
     }
 
     .contact-section,
+    .syndic-section,
     .careers-section,
     .about-section {
         grid-template-columns: minmax(0, 1fr);
@@ -543,20 +697,7 @@ a {
     }
 
     .nav-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        overflow: visible;
-        padding-bottom: 0;
-        font-size: 0.86rem;
-    }
-
-    .nav-links a {
-        padding: 8px 10px;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        background: #ffffff;
-        line-height: 1;
+        display: none;
     }
 
     .hero-section {
@@ -592,6 +733,7 @@ a {
     }
 
     .section,
+    .syndic-section,
     .careers-section,
     .contact-section {
         padding-left: 16px;
@@ -603,6 +745,7 @@ a {
     .section-heading h2,
     .about-copy h2,
     .contact-copy h2,
+    .syndic-copy h2,
     .careers-copy h2 {
         font-size: clamp(1.75rem, 9vw, 2.35rem);
         line-height: 1.12;
@@ -610,7 +753,8 @@ a {
 
     .service-card,
     .process-grid article,
-    .about-panel {
+    .about-panel,
+    .panel-header {
         padding: 20px;
     }
 
@@ -620,6 +764,14 @@ a {
     }
 
     .career-list {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-header {
+        flex-direction: column;
+    }
+
+    .panel-actions {
         grid-template-columns: 1fr;
     }
 
@@ -641,14 +793,6 @@ a {
 }
 
 @media (max-width: 380px) {
-    .nav-links {
-        font-size: 0.8rem;
-    }
-
-    .nav-links a {
-        padding: 7px 8px;
-    }
-
     .hero-content h1 {
         font-size: 1.9rem;
     }
