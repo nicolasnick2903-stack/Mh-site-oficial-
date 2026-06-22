@@ -1,27 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const dropdownMenu = document.getElementById("site-menu");
-    const quoteForm = document.getElementById("quote-form");
-    const formStatus = document.getElementById("form-status");
-    const syndicRegisterForm = document.getElementById("syndic-register-form");
-    const syndicPanel = document.getElementById("syndic-panel");
-    const syndicReset = document.getElementById("syndic-reset");
-    const syndicWelcome = document.getElementById("syndic-welcome");
-    const syndicCondoLabel = document.getElementById("syndic-condo-label");
-    const panelActions = document.querySelectorAll("[data-panel-target]");
-    const panelForms = document.querySelectorAll(".panel-form");
-    const ticketForm = document.getElementById("ticket-form-wrap");
-    const ticketStatus = document.getElementById("ticket-status");
-    const adminRefresh = document.getElementById("admin-refresh");
-    const adminStatus = document.getElementById("admin-status");
-    const adminTicketList = document.getElementById("admin-ticket-list");
-    const adminNotificationList = document.getElementById("admin-notification-list");
-    const syndicStorageKey = "mhFacilitiesSyndicUser";
+    var syndicStorageKey = "mhFacilitiesSyndicUser";
+    var localTicketKey = "mhFacilitiesLocalTickets";
 
-    if (menuToggle && dropdownMenu) {
+    initMenu();
+    initReveal();
+    initQuoteForm();
+    initSyndicPortal();
+    initAdminPanel();
+    initRating();
+
+    // ── MENU MOBILE ──────────────────────────────────────────────────────────
+
+    function initMenu() {
+        var menuToggle = document.querySelector(".menu-toggle");
+        var dropdownMenu = document.getElementById("site-menu");
+
+        if (!menuToggle || !dropdownMenu) return;
+
         menuToggle.addEventListener("click", function () {
-            const isOpen = menuToggle.getAttribute("aria-expanded") === "true";
-
+            var isOpen = menuToggle.getAttribute("aria-expanded") === "true";
             menuToggle.setAttribute("aria-expanded", String(!isOpen));
             dropdownMenu.hidden = isOpen;
         });
@@ -34,368 +31,551 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         document.addEventListener("click", function (event) {
-            if (!dropdownMenu.hidden && !dropdownMenu.contains(event.target) && !menuToggle.contains(event.target)) {
+            if (!dropdownMenu.hidden &&
+                !dropdownMenu.contains(event.target) &&
+                !menuToggle.contains(event.target)) {
                 menuToggle.setAttribute("aria-expanded", "false");
                 dropdownMenu.hidden = true;
             }
         });
     }
 
-    if (quoteForm) {
-        quoteForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+    // ── REVEAL ON SCROLL ────────────────────────────────────────────────────
 
-            const formData = new FormData(quoteForm);
-            const name = String(formData.get("name") || "").trim();
-            const company = String(formData.get("company") || "").trim();
-            const service = String(formData.get("service") || "").trim();
-            const message = String(formData.get("message") || "").trim();
+    function initReveal() {
+        var items = document.querySelectorAll(".reveal");
 
-            if (!name || !company || !service) {
-                if (formStatus) {
-                    formStatus.textContent = "Preencha os campos obrigatorios para enviar.";
-                }
-                return;
-            }
-
-            const lines = [
-                "Ola MH Facilities, gostaria de solicitar um orcamento.",
-                "",
-                "Nome: " + name,
-                "Empresa/condominio: " + company,
-                "Servico: " + service
-            ];
-
-            if (message) {
-                lines.push("Mensagem: " + message);
-            }
-
-            openWhatsApp(lines, formStatus);
-        });
-    }
-
-    hydrateSyndicArea();
-
-    if (syndicRegisterForm) {
-        syndicRegisterForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            const formData = new FormData(syndicRegisterForm);
-            const user = {
-                name: String(formData.get("syndicName") || "").trim(),
-                cpf: String(formData.get("syndicCpf") || "").trim(),
-                email: String(formData.get("syndicEmail") || "").trim(),
-                phone: String(formData.get("syndicPhone") || "").trim(),
-                condo: String(formData.get("syndicCondo") || "").trim()
-            };
-
-            if (!user.name || !user.cpf || !user.email || !user.phone || !user.condo) {
-                setText("syndic-register-status", "Preencha todos os dados para criar o usuario.");
-                return;
-            }
-
-            localStorage.setItem(syndicStorageKey, JSON.stringify(user));
-            renderSyndicPanel(user);
-            setText("syndic-register-status", "");
-        });
-    }
-
-    if (syndicReset && syndicRegisterForm && syndicPanel) {
-        syndicReset.addEventListener("click", function () {
-            localStorage.removeItem(syndicStorageKey);
-            syndicPanel.classList.add("hidden");
-            syndicRegisterForm.classList.remove("hidden");
-            syndicRegisterForm.reset();
-        });
-    }
-
-    panelActions.forEach(function (button) {
-        button.addEventListener("click", function () {
-            const targetId = button.getAttribute("data-panel-target");
-
-            panelActions.forEach(function (item) {
-                item.classList.toggle("active", item === button);
-            });
-
-            panelForms.forEach(function (form) {
-                form.classList.toggle("hidden", form.id !== targetId);
-            });
-        });
-    });
-
-    document.querySelectorAll(".panel-form").forEach(function (form) {
-        form.addEventListener("submit", function () {
-            fillSyndicHiddenFields(form);
-        });
-    });
-
-    if (ticketForm) {
-        ticketForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            const user = getSyndicUser();
-            const formData = new FormData(ticketForm);
-            const area = String(formData.get("Area do chamado") || "").trim();
-            const priority = String(formData.get("Prioridade") || "").trim();
-            const subject = String(formData.get("Assunto") || "").trim();
-            const description = String(formData.get("Descricao do chamado") || "").trim();
-
-            if (!user || !area || !priority || !subject || !description) {
-                if (ticketStatus) {
-                    ticketStatus.textContent = "Preencha os dados do chamado antes de enviar.";
-                }
-                return;
-            }
-
-            if (ticketStatus) {
-                ticketStatus.textContent = "Abrindo chamado e registrando notificacoes...";
-            }
-
-            try {
-                const response = await fetch("/api/chamados", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        sindicoNome: user.name,
-                        sindicoCpf: user.cpf,
-                        sindicoEmail: user.email,
-                        sindicoTelefone: user.phone,
-                        condominioNome: user.condo,
-                        categoria: area,
-                        prioridade: priority,
-                        assunto: subject,
-                        descricao: description
-                    })
-                });
-
-                if (!response.ok) {
-                    const message = await response.text();
-                    throw new Error(message || "Nao foi possivel abrir o chamado.");
-                }
-
-                const ticket = await response.json();
-                ticketForm.reset();
-                if (ticketStatus) {
-                    ticketStatus.textContent = "Chamado " + ticket.numero + " aberto com sucesso. A MH foi notificada por e-mail e WhatsApp.";
-                }
-                loadAdminPanel();
-            } catch (error) {
-                if (ticketStatus) {
-                    ticketStatus.textContent = "Nao foi possivel conectar ao sistema. Verifique se o backend esta ativo.";
-                }
-            }
-        });
-    }
-
-    if (adminRefresh) {
-        adminRefresh.addEventListener("click", loadAdminPanel);
-        loadAdminPanel();
-    }
-
-    function openWhatsApp(lines, statusElement) {
-        const whatsappUrl = "https://wa.me/5511992144970?text=" + encodeURIComponent(lines.join("\n"));
-
-        if (statusElement) {
-            statusElement.textContent = "Abrindo WhatsApp...";
+        if (!items.length || !("IntersectionObserver" in window)) {
+            items.forEach(function (item) { item.classList.add("is-visible"); });
+            return;
         }
 
-        window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("is-visible");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        items.forEach(function (item) { observer.observe(item); });
     }
 
-    function hydrateSyndicArea() {
-        const user = getSyndicUser();
+    // ── FORMULÁRIO DE ORÇAMENTO ──────────────────────────────────────────────
 
-        if (user) {
-            renderSyndicPanel(user);
+    function initQuoteForm() {
+        var quoteForm = document.getElementById("quote-form");
+        var formStatus = document.getElementById("form-status");
+
+        if (!quoteForm) return;
+
+        quoteForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            var formData = new FormData(quoteForm);
+            var payload = {
+                nome: value(formData, "name"),
+                empresaCondominio: value(formData, "company"),
+                telefone: value(formData, "phone"),
+                email: value(formData, "email"),
+                servico: value(formData, "service"),
+                mensagem: value(formData, "message")
+            };
+
+            if (!payload.nome || !payload.empresaCondominio || !payload.telefone || !payload.email || !payload.servico) {
+                setText(formStatus, "Preencha os campos obrigatórios para enviar.");
+                return;
+            }
+
+            setText(formStatus, "Enviando solicitação...");
+
+            try {
+                var response = await fetch("/api/orcamentos", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(await response.text());
+
+                quoteForm.reset();
+                setText(formStatus, "Solicitação registrada com sucesso. A equipe MH retornará em breve.");
+            } catch (error) {
+                setText(formStatus, "Não foi possível conectar ao sistema. Abrindo WhatsApp como alternativa...");
+                openWhatsApp([
+                    "Olá MH Facilities, gostaria de solicitar um orçamento.",
+                    "",
+                    "Nome: " + payload.nome,
+                    "Empresa/Condomínio: " + payload.empresaCondominio,
+                    "Telefone: " + payload.telefone,
+                    "E-mail: " + payload.email,
+                    "Serviço: " + payload.servico,
+                    "Mensagem: " + payload.mensagem
+                ]);
+            }
+        });
+    }
+
+    // ── PORTAL DO SÍNDICO ────────────────────────────────────────────────────
+
+    function initSyndicPortal() {
+        var registerForm = document.getElementById("syndic-register-form");
+        var panel = document.getElementById("syndic-panel");
+        var resetBtn = document.getElementById("syndic-reset");
+        var ticketForm = document.getElementById("ticket-form-wrap");
+        var historyFilter = document.getElementById("history-filter");
+
+        if (!registerForm && !panel) return;
+
+        // Restaurar sessão salva
+        var storedUser = getSyndicUser();
+        if (storedUser) {
+            renderSyndicPanel(storedUser);
+        }
+
+        // Login — apenas e-mail + senha
+        if (registerForm) {
+            registerForm.addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                var formData = new FormData(registerForm);
+                var email = value(formData, "syndicEmail");
+                var senha = value(formData, "syndicPassword");
+
+                if (!email || !senha) {
+                    setTextById("syndic-register-status", "Informe e-mail e senha para entrar.");
+                    return;
+                }
+
+                setTextById("syndic-register-status", "Verificando credenciais...");
+
+                try {
+                    var response = await fetch("/api/auth/sindico/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email: email, senha: senha })
+                    });
+
+                    if (response.ok) {
+                        var data = await response.json();
+                        var user = {
+                            name: data.nome || email.split("@")[0],
+                            email: email,
+                            condo: data.condominio || "Condomínio",
+                            phone: data.telefone || ""
+                        };
+                        localStorage.setItem(syndicStorageKey, JSON.stringify(user));
+                        renderSyndicPanel(user);
+                        setTextById("syndic-register-status", "");
+                    } else if (response.status === 401) {
+                        setTextById("syndic-register-status", "E-mail ou senha incorretos.");
+                    } else {
+                        throw new Error("Falha no servidor.");
+                    }
+                } catch (error) {
+                    // Backend indisponível: modo demonstração
+                    var user = {
+                        name: email.split("@")[0],
+                        email: email,
+                        condo: "Condomínio Demo",
+                        phone: ""
+                    };
+                    localStorage.setItem(syndicStorageKey, JSON.stringify(user));
+                    renderSyndicPanel(user);
+                    setTextById("syndic-register-status", "");
+                }
+            });
+        }
+
+        // Logout
+        if (resetBtn) {
+            resetBtn.addEventListener("click", function () {
+                localStorage.removeItem(syndicStorageKey);
+                if (panel) panel.classList.add("hidden");
+                if (registerForm) {
+                    var loginWrap = document.getElementById("syndic-login-wrap");
+                    if (loginWrap) loginWrap.classList.remove("hidden");
+                    registerForm.classList.remove("hidden");
+                    registerForm.reset();
+                }
+            });
+        }
+
+        // Navegação entre abas do painel
+        document.querySelectorAll("[data-panel-target]").forEach(function (button) {
+            button.addEventListener("click", function () {
+                var targetId = button.getAttribute("data-panel-target");
+
+                document.querySelectorAll("[data-panel-target]").forEach(function (item) {
+                    item.classList.toggle("active", item === button);
+                });
+
+                document.querySelectorAll(".panel-form").forEach(function (form) {
+                    form.classList.toggle("hidden", form.id !== targetId);
+                });
+
+                if (targetId === "ticket-history-wrap") {
+                    renderSyndicHistory();
+                }
+            });
+        });
+
+        if (historyFilter) {
+            historyFilter.addEventListener("change", renderSyndicHistory);
+        }
+
+        if (ticketForm) {
+            ticketForm.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                await submitTicket(ticketForm);
+            });
+        }
+    }
+
+    async function submitTicket(ticketForm) {
+        var user = getSyndicUser();
+        var status = document.getElementById("ticket-status");
+        var formData = new FormData(ticketForm);
+        var photoNames = fileNames(document.getElementById("ticket-photos"));
+        var documentNames = fileNames(document.getElementById("ticket-docs"));
+        var description = value(formData, "Descricao do chamado");
+
+        var attachmentText = [
+            photoNames ? "Fotos anexadas: " + photoNames : "",
+            documentNames ? "Documentos anexados: " + documentNames : ""
+        ].filter(Boolean).join("\n");
+
+        var payload = {
+            sindicoNome: user ? user.name : "",
+            sindicoEmail: user ? user.email : "",
+            sindicoTelefone: user ? user.phone : "",
+            condominioNome: user ? user.condo : "",
+            categoria: value(formData, "Area do chamado"),
+            prioridade: value(formData, "Prioridade"),
+            assunto: value(formData, "Assunto"),
+            descricao: attachmentText ? description + "\n\n" + attachmentText : description
+        };
+
+        if (!payload.sindicoNome || !payload.sindicoEmail || !payload.condominioNome ||
+            !payload.categoria || !payload.prioridade || !payload.assunto || !payload.descricao) {
+            setText(status, "Preencha todos os dados do chamado antes de enviar.");
+            return;
+        }
+
+        setText(status, "Gerando protocolo e notificando a MH...");
+
+        try {
+            var response = await fetch("/api/chamados", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) throw new Error(await response.text());
+
+            var ticket = await response.json();
+            saveLocalTicket(ticket);
+            ticketForm.reset();
+            setText(status, "Chamado " + ticket.numero + " aberto com sucesso. Você receberá um e-mail de confirmação.");
+            renderSyndicHistory();
+            updateSyndicMetrics();
+        } catch (error) {
+            setText(status, "Não foi possível conectar ao sistema. Tente novamente em instantes.");
         }
     }
 
     function renderSyndicPanel(user) {
-        if (syndicRegisterForm) {
-            syndicRegisterForm.classList.add("hidden");
-        }
+        var registerForm = document.getElementById("syndic-register-form");
+        var loginWrap = document.getElementById("syndic-login-wrap");
+        var panel = document.getElementById("syndic-panel");
 
-        if (syndicPanel) {
-            syndicPanel.classList.remove("hidden");
-        }
+        if (loginWrap) loginWrap.classList.add("hidden");
+        if (registerForm) registerForm.classList.add("hidden");
+        if (panel) panel.classList.remove("hidden");
 
-        if (syndicWelcome) {
-            syndicWelcome.textContent = "Ola, " + user.name;
-        }
+        setText(document.getElementById("syndic-welcome"), "Olá, " + user.name);
+        setText(document.getElementById("syndic-condo-label"), user.condo);
+        updateSyndicMetrics();
+        renderSyndicHistory();
+    }
 
-        if (syndicCondoLabel) {
-            syndicCondoLabel.textContent = "Condominio: " + user.condo;
-        }
+    function renderSyndicHistory() {
+        var list = document.getElementById("syndic-history-list");
+        var filter = document.getElementById("history-filter");
 
-        document.querySelectorAll(".panel-form").forEach(function (form) {
-            fillSyndicHiddenFields(form);
+        if (!list) return;
+
+        var selected = filter ? filter.value : "";
+        var tickets = getLocalTickets().filter(function (ticket) {
+            return !selected || ticket.status === selected;
         });
+
+        if (!tickets.length) {
+            list.innerHTML = '<p class="admin-empty">Nenhum chamado encontrado.</p>';
+            return;
+        }
+
+        list.innerHTML = tickets.map(ticketCard).join("");
+    }
+
+    function updateSyndicMetrics() {
+        var tickets = getLocalTickets();
+        setTextById("metric-open", String(tickets.filter(function (t) {
+            return t.status !== "RESOLVIDO" && t.status !== "FECHADO";
+        }).length));
+        setTextById("metric-done", String(tickets.filter(function (t) {
+            return t.status === "RESOLVIDO" || t.status === "FECHADO";
+        }).length));
+    }
+
+    // ── PAINEL ADMINISTRATIVO ─────────────────────────────────────────────────
+
+    function initAdminPanel() {
+        var refresh = document.getElementById("admin-refresh");
+        var hasAdmin = document.getElementById("admin-ticket-list") || document.getElementById("admin-quote-list");
+
+        if (!hasAdmin) return;
+
+        if (refresh) {
+            refresh.addEventListener("click", loadAdminPanel);
+        }
+
+        loadAdminPanel();
     }
 
     async function loadAdminPanel() {
-        if (!adminTicketList || !adminNotificationList) {
-            return;
-        }
+        var ticketList = document.getElementById("admin-ticket-list");
+        var notificationList = document.getElementById("admin-notification-list");
+        var quoteList = document.getElementById("admin-quote-list");
+        var adminStatus = document.getElementById("admin-status");
 
-        if (adminStatus) {
-            adminStatus.textContent = "Carregando...";
-        }
+        setText(adminStatus, "Carregando painel...");
 
         try {
-            const responses = await Promise.all([
+            var responses = await Promise.all([
                 fetch("/api/admin/chamados"),
-                fetch("/api/admin/notificacoes")
+                fetch("/api/admin/notificacoes"),
+                fetch("/api/admin/orcamentos")
             ]);
 
-            if (!responses[0].ok || !responses[1].ok) {
+            if (!responses.every(function (r) { return r.ok; })) {
                 throw new Error("Falha ao carregar painel.");
             }
 
-            const tickets = await responses[0].json();
-            const notifications = await responses[1].json();
+            var tickets = await responses[0].json();
+            var notifications = await responses[1].json();
+            var quotes = await responses[2].json();
 
-            renderTickets(tickets);
-            renderNotifications(notifications);
-
-            if (adminStatus) {
-                adminStatus.textContent = "Painel atualizado.";
+            if (ticketList) {
+                ticketList.innerHTML = tickets.length
+                    ? tickets.map(adminTicketCard).join("")
+                    : '<p class="admin-empty">Nenhum chamado recebido.</p>';
+                bindStatusSelects();
             }
+
+            if (notificationList) {
+                notificationList.innerHTML = notifications.length
+                    ? notifications.map(notificationCard).join("")
+                    : '<p class="admin-empty">Nenhuma notificação registrada.</p>';
+            }
+
+            if (quoteList) {
+                quoteList.innerHTML = quotes.length
+                    ? quotes.map(quoteCard).join("")
+                    : '<p class="admin-empty">Nenhum orçamento recebido.</p>';
+            }
+
+            setTextById("admin-total-tickets", String(tickets.length));
+            setTextById("admin-total-quotes", String(quotes.length));
+            setTextById("admin-total-notifications", String(notifications.length));
+            setText(adminStatus, "Painel atualizado.");
         } catch (error) {
-            adminTicketList.innerHTML = '<p class="admin-empty">Backend indisponivel.</p>';
-            adminNotificationList.innerHTML = '<p class="admin-empty">Nao foi possivel carregar o historico.</p>';
-            if (adminStatus) {
-                adminStatus.textContent = "Nao foi possivel conectar ao sistema.";
-            }
+            if (ticketList) ticketList.innerHTML = '<p class="admin-empty">Backend indisponível.</p>';
+            if (notificationList) notificationList.innerHTML = '<p class="admin-empty">Não foi possível carregar notificações.</p>';
+            if (quoteList) quoteList.innerHTML = '<p class="admin-empty">Não foi possível carregar orçamentos.</p>';
+            setText(adminStatus, "Não foi possível conectar ao sistema.");
         }
     }
 
-    function renderTickets(tickets) {
-        if (!tickets.length) {
-            adminTicketList.innerHTML = '<p class="admin-empty">Nenhum chamado recebido ainda.</p>';
-            return;
-        }
+    function bindStatusSelects() {
+        document.querySelectorAll("[data-ticket-status]").forEach(function (select) {
+            select.addEventListener("change", async function () {
+                var ticketId = select.getAttribute("data-ticket-status");
+                var adminStatus = document.getElementById("admin-status");
+                setText(adminStatus, "Atualizando status...");
 
-        adminTicketList.innerHTML = tickets.map(function (ticket) {
-            return [
-                '<article class="admin-item">',
-                '<div class="admin-item-head">',
-                '<strong>' + escapeHtml(ticket.numero) + '</strong>',
-                '<span>' + formatStatus(ticket.status) + '</span>',
-                '</div>',
-                '<h4>' + escapeHtml(ticket.assunto) + '</h4>',
-                '<p>' + escapeHtml(ticket.condominio) + ' | ' + escapeHtml(ticket.categoria) + ' | ' + escapeHtml(ticket.prioridade) + '</p>',
-                '<p>' + escapeHtml(ticket.descricao) + '</p>',
-                '<select data-ticket-status="' + ticket.id + '">',
-                statusOption("EM_ANDAMENTO", ticket.status, "Em andamento"),
-                statusOption("RESOLVIDO", ticket.status, "Resolvido"),
-                statusOption("FECHADO", ticket.status, "Fechado"),
-                '</select>',
-                '</article>'
-            ].join("");
-        }).join("");
+                try {
+                    var response = await fetch("/api/chamados/" + encodeURIComponent(ticketId) + "/status", {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: select.value })
+                    });
 
-        adminTicketList.querySelectorAll("[data-ticket-status]").forEach(function (select) {
-            select.addEventListener("change", function () {
-                updateTicketStatus(select.getAttribute("data-ticket-status"), select.value);
+                    if (!response.ok) throw new Error("Falha ao atualizar status.");
+
+                    loadAdminPanel();
+                } catch (error) {
+                    setText(adminStatus, "Não foi possível atualizar o status.");
+                }
             });
         });
     }
 
-    function renderNotifications(notifications) {
-        if (!notifications.length) {
-            adminNotificationList.innerHTML = '<p class="admin-empty">Nenhuma notificacao registrada ainda.</p>';
-            return;
-        }
+    // ── AVALIAÇÃO ─────────────────────────────────────────────────────────────
 
-        adminNotificationList.innerHTML = notifications.map(function (notification) {
-            return [
-                '<article class="admin-item">',
-                '<div class="admin-item-head">',
-                '<strong>' + escapeHtml(notification.tipo) + '</strong>',
-                '<span>' + escapeHtml(notification.statusEnvio) + '</span>',
-                '</div>',
-                '<p>Chamado ' + escapeHtml(notification.chamadoNumero || "-") + '</p>',
-                '<p>' + escapeHtml(notification.destinatario) + '</p>',
-                '</article>'
-            ].join("");
-        }).join("");
+    function initRating() {
+        var ratingForm = document.getElementById("rating-form");
+
+        if (!ratingForm) return;
+
+        ratingForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            ratingForm.reset();
+            setTextById("rating-status", "Obrigado! Sua avaliação foi registrada e será analisada pela equipe de qualidade MH.");
+        });
     }
 
-    async function updateTicketStatus(ticketId, status) {
-        if (!status) {
-            return;
-        }
+    // ── TEMPLATES DE CARDS ────────────────────────────────────────────────────
 
-        if (adminStatus) {
-            adminStatus.textContent = "Atualizando status...";
-        }
+    function adminTicketCard(ticket) {
+        return [
+            '<article class="admin-item">',
+            '<div class="admin-item-head">',
+            '<strong>' + escapeHtml(ticket.numero) + '</strong>',
+            '<span>' + escapeHtml(formatStatus(ticket.status)) + '</span>',
+            '</div>',
+            '<h3>' + escapeHtml(ticket.assunto) + '</h3>',
+            '<p>' + escapeHtml(ticket.condominio) + ' &bull; ' + escapeHtml(ticket.categoria) + ' &bull; ' + escapeHtml(ticket.prioridade) + '</p>',
+            '<p>' + escapeHtml(ticket.descricao) + '</p>',
+            '<select data-ticket-status="' + escapeHtml(ticket.id) + '">',
+            option("EM_ANDAMENTO", ticket.status, "Em andamento"),
+            option("RESOLVIDO", ticket.status, "Resolvido"),
+            option("FECHADO", ticket.status, "Fechado"),
+            '</select>',
+            '</article>'
+        ].join("");
+    }
 
+    function ticketCard(ticket) {
+        return [
+            '<article class="admin-item">',
+            '<div class="admin-item-head">',
+            '<strong>' + escapeHtml(ticket.numero) + '</strong>',
+            '<span class="status-badge status-' + String(ticket.status || "").toLowerCase() + '">' + escapeHtml(formatStatus(ticket.status)) + '</span>',
+            '</div>',
+            '<h3>' + escapeHtml(ticket.assunto) + '</h3>',
+            '<p>' + escapeHtml(ticket.createdAt ? formatDate(ticket.createdAt) : "") + ' &bull; ' + escapeHtml(ticket.categoria) + '</p>',
+            '<p>Responsável: Equipe MH Facilities</p>',
+            '<p>Acompanhamento pelo painel administrativo.</p>',
+            '</article>'
+        ].join("");
+    }
+
+    function notificationCard(notification) {
+        return [
+            '<article class="admin-item">',
+            '<div class="admin-item-head">',
+            '<strong>' + escapeHtml(notification.tipo) + '</strong>',
+            '<span>' + escapeHtml(notification.statusEnvio) + '</span>',
+            '</div>',
+            '<p>Chamado ' + escapeHtml(notification.chamadoNumero || "-") + '</p>',
+            '<p>' + escapeHtml(notification.destinatario) + '</p>',
+            '</article>'
+        ].join("");
+    }
+
+    function quoteCard(quote) {
+        return [
+            '<article class="admin-item">',
+            '<div class="admin-item-head">',
+            '<strong>#ORC-' + escapeHtml(String(quote.id)) + '</strong>',
+            '<span>NOVO</span>',
+            '</div>',
+            '<h3>' + escapeHtml(quote.empresaCondominio) + '</h3>',
+            '<p>' + escapeHtml(quote.nome) + ' &bull; ' + escapeHtml(quote.telefone) + '</p>',
+            '<p>' + escapeHtml(quote.email) + '</p>',
+            '<p>Serviço: ' + escapeHtml(quote.servico) + '</p>',
+            '<p>' + escapeHtml(quote.mensagem || "") + '</p>',
+            '</article>'
+        ].join("");
+    }
+
+    // ── STORAGE HELPERS ───────────────────────────────────────────────────────
+
+    function saveLocalTicket(ticket) {
+        var tickets = getLocalTickets();
+        tickets.unshift(ticket);
+        localStorage.setItem(localTicketKey, JSON.stringify(tickets.slice(0, 50)));
+    }
+
+    function getLocalTickets() {
         try {
-            const response = await fetch("/api/chamados/" + encodeURIComponent(ticketId) + "/status", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ status: status })
-            });
-
-            if (!response.ok) {
-                throw new Error("Falha ao atualizar status.");
-            }
-
-            loadAdminPanel();
-        } catch (error) {
-            if (adminStatus) {
-                adminStatus.textContent = "Nao foi possivel atualizar o status.";
-            }
+            return JSON.parse(localStorage.getItem(localTicketKey)) || [];
+        } catch (e) {
+            return [];
         }
-    }
-
-    function statusOption(value, current, label) {
-        return '<option value="' + value + '"' + (value === current ? " selected" : "") + '>' + label + '</option>';
-    }
-
-    function formatStatus(status) {
-        return String(status || "").replace(/_/g, " ");
-    }
-
-    function escapeHtml(value) {
-        return String(value || "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    function fillSyndicHiddenFields(form) {
-        const user = getSyndicUser();
-
-        if (!user || !form) {
-            return;
-        }
-
-        form.querySelectorAll("[data-syndic-field]").forEach(function (field) {
-            const key = field.getAttribute("data-syndic-field");
-            field.value = user[key] || "";
-        });
     }
 
     function getSyndicUser() {
         try {
             return JSON.parse(localStorage.getItem(syndicStorageKey));
-        } catch (error) {
+        } catch (e) {
             return null;
         }
     }
 
-    function setText(id, text) {
-        const element = document.getElementById(id);
+    // ── UTILS ─────────────────────────────────────────────────────────────────
 
-        if (element) {
-            element.textContent = text;
-        }
+    function openWhatsApp(lines) {
+        window.open(
+            "https://wa.me/5511992144970?text=" + encodeURIComponent(lines.join("\n")),
+            "_blank",
+            "noopener,noreferrer"
+        );
+    }
+
+    function value(formData, key) {
+        return String(formData.get(key) || "").trim();
+    }
+
+    function fileNames(input) {
+        if (!input || !input.files || !input.files.length) return "";
+        return Array.from(input.files).map(function (f) { return f.name; }).join(", ");
+    }
+
+    function option(val, current, label) {
+        return '<option value="' + val + '"' + (val === current ? " selected" : "") + '>' + label + '</option>';
+    }
+
+    function formatStatus(status) {
+        var map = {
+            "ABERTO": "Aberto",
+            "EM_ANDAMENTO": "Em andamento",
+            "RESOLVIDO": "Concluído",
+            "FECHADO": "Cancelado"
+        };
+        return map[status] || String(status || "").replace(/_/g, " ");
+    }
+
+    function formatDate(val) {
+        return new Date(val).toLocaleDateString("pt-BR");
+    }
+
+    function setTextById(id, text) {
+        setText(document.getElementById(id), text);
+    }
+
+    function setText(element, text) {
+        if (element) element.textContent = text;
+    }
+
+    function escapeHtml(val) {
+        return String(val || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 });

@@ -1,0 +1,15 @@
+# Maven build output
+mh-facilities/backend/target/
+
+# Apache Maven local
+mh-facilities/backend/apache-maven-*/
+
+# SSL certs (nunca commitar chaves privadas)
+mh-facilities/nginx/certs/*.pem
+mh-facilities/nginx/certs/*.key
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp

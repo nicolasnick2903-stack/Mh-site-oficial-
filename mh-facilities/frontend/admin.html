@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050505">
+    <title>Painel Administrativo | MH Facilities &amp; Segurança</title>
+    <link rel="icon" href="assets/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="portal-page">
+    <header class="site-header">
+        <nav class="nav-shell" aria-label="Navegação principal">
+            <a class="brand" href="index.html">
+                <img src="assets/logo.png" alt="MH Facilities" class="brand-logo">
+                <span>MH Admin</span>
+            </a>
+            <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="sindico.html">Área do Síndico</a>
+                <a href="admin.html" class="nav-link-highlight">Painel Administrativo</a>
+            </div>
+            <div id="site-menu" class="dropdown-menu" hidden>
+                <a href="index.html">Home</a>
+                <a href="sindico.html">Área do Síndico</a>
+                <a href="admin.html">Painel Administrativo</a>
+            </div>
+            <button id="admin-refresh" class="nav-action" type="button">Atualizar</button>
+        </nav>
+    </header>
+
+    <main class="admin-main">
+        <section class="admin-hero">
+            <div>
+                <p class="eyebrow">Painel Administrativo MH</p>
+                <h1>Gestão operacional, chamados e notificações.</h1>
+                <p>Central exclusiva para acompanhar orçamentos recebidos, condomínios, síndicos, chamados, status, documentos e indicadores.</p>
+            </div>
+            <p id="admin-status" class="form-status" aria-live="polite"></p>
+        </section>
+
+        <!-- MÉTRICAS -->
+        <section class="metric-grid admin-metrics">
+            <article>
+                <span>Chamados recebidos</span>
+                <strong id="admin-total-tickets">0</strong>
+            </article>
+            <article>
+                <span>Orçamentos</span>
+                <strong id="admin-total-quotes">0</strong>
+            </article>
+            <article>
+                <span>Notificações</span>
+                <strong id="admin-total-notifications">0</strong>
+            </article>
+            <article>
+                <span>Funcionários ativos</span>
+                <strong>24</strong>
+            </article>
+        </section>
+
+        <!-- GESTÃO -->
+        <section class="admin-management-grid">
+            <article>
+                <h2>Gerenciar condomínios</h2>
+                <p>Cadastros, contratos, relatórios e documentos vinculados.</p>
+            </article>
+            <article>
+                <h2>Gerenciar síndicos</h2>
+                <p>Acessos, perfis, contatos e permissões LGPD.</p>
+            </article>
+            <article>
+                <h2>Gerenciar funcionários</h2>
+                <p>Escalas, funções, alocações e reciclagens.</p>
+            </article>
+            <article>
+                <h2>Relatórios</h2>
+                <p>Tempo médio, satisfação, indicadores e chamados por condomínio.</p>
+            </article>
+        </section>
+
+        <!-- LISTAS OPERACIONAIS -->
+        <section class="admin-grid">
+            <div>
+                <h2>Chamados recebidos</h2>
+                <div id="admin-ticket-list" class="admin-list"></div>
+            </div>
+            <div>
+                <h2>Orçamentos recebidos</h2>
+                <div id="admin-quote-list" class="admin-list"></div>
+            </div>
+            <div>
+                <h2>E-mails e WhatsApps enviados</h2>
+                <div id="admin-notification-list" class="admin-list"></div>
+            </div>
+            <div>
+                <h2>Indicadores operacionais</h2>
+                <div class="report-list">
+                    <span>Chamados por condomínio</span>
+                    <span>Tempo médio de atendimento</span>
+                    <span>Satisfação dos clientes</span>
+                    <span>Funcionários ativos</span>
+                    <span>Relatórios mensais</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="site-footer">
+        <div class="footer-brand">
+            <strong>MH Facilities &amp; Segurança</strong>
+            <span>Portaria, limpeza, zeladoria, facilities e segurança condominial.</span>
+            <div class="footer-contact">
+                <a href="tel:+5511992144970">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>
+                    (11) 99214-4970
+                </a>
+                <a href="mailto:mhfacilitiesseguranca@gmail.com">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    mhfacilitiesseguranca@gmail.com
+                </a>
+            </div>
+        </div>
+        <nav class="footer-nav" aria-label="Links do rodapé">
+            <div class="footer-links">
+                <strong>Acesso</strong>
+                <a href="index.html">Site</a>
+                <a href="sindico.html">Área do Síndico</a>
+            </div>
+            <div class="footer-links">
+                <strong>Legal</strong>
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <a href="#">LGPD</a>
+            </div>
+        </nav>
+        <div class="footer-bottom">
+            <span>&copy; 2025 MH Facilities &amp; Segurança. Todos os direitos reservados.</span>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

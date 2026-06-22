@@ -1,0 +1,34 @@
+name: Deploy Frontend — MH Facilities
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "mh-facilities/frontend/**"
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Netlify Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Deploy para Netlify
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: "./mh-facilities/frontend"
+          production-branch: main
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy ${{ github.sha }} — ${{ github.event.head_commit.message }}"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: false
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        timeout-minutes: 5
