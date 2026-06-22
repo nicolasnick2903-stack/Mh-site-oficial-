@@ -13,5 +13,29 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret: mhfacilities2026
+
+mh:
+  notifications:
+    admin-emails:
+      - mhfacilitiesseguranca@gmail.com
+    admin-whatsapp-number: ${MH_ADMIN_WHATSAPP:5511992144970}
+    whatsapp-provider: ${WHATSAPP_PROVIDER:meta}
+    whatsapp-token: ${WHATSAPP_TOKEN:}
+    whatsapp-phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID:}
+    twilio-account-sid: ${TWILIO_ACCOUNT_SID:}
+    twilio-auth-token: ${TWILIO_AUTH_TOKEN:}
+    twilio-from-number: ${TWILIO_FROM_NUMBER:}

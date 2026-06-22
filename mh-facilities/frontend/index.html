@@ -33,12 +33,14 @@
                 <a href="#sobre">Sobre</a>
                 <a href="#processo">Como atuamos</a>
                 <a href="#trabalhe-conosco">Trabalhe conosco</a>
+                <a href="#admin">Admin</a>
                 <a href="#contato">Contato</a>
             </div>
             <div id="site-menu" class="dropdown-menu" hidden>
                 <a href="#servicos">Servi&ccedil;os</a>
                 <a href="#trabalhe-conosco">Trabalhe conosco</a>
                 <a href="#area-sindico">&Aacute;rea do s&iacute;ndico</a>
+                <a href="#admin">Admin</a>
                 <a href="#contato">Contato</a>
             </div>
             <a class="nav-action" href="https://wa.me/5511992144970?text=Ola%20MH%20Facilities%2C%20gostaria%20de%20solicitar%20um%20orcamento." target="_blank" rel="noopener noreferrer">WhatsApp</a>
@@ -211,6 +213,9 @@
                     <label for="syndic-email">E-mail</label>
                     <input id="syndic-email" name="syndicEmail" type="email" placeholder="email@sindico.com.br" required>
 
+                    <label for="syndic-phone">WhatsApp</label>
+                    <input id="syndic-phone" name="syndicPhone" type="tel" placeholder="(11) 90000-0000" required>
+
                     <label for="syndic-condo">Condom&iacute;nio</label>
                     <input id="syndic-condo" name="syndicCondo" type="text" placeholder="Nome do condom&iacute;nio" required>
 
@@ -241,24 +246,36 @@
                         <input type="hidden" name="Nome do sindico" data-syndic-field="name">
                         <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
                         <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="WhatsApp do sindico" data-syndic-field="phone">
                         <input type="hidden" name="Condominio" data-syndic-field="condo">
 
                         <label for="ticket-area">&Aacute;rea do chamado</label>
                         <select id="ticket-area" name="Area do chamado" required>
                             <option value="">Selecione</option>
-                            <option>Portaria</option>
-                            <option>Limpeza</option>
-                            <option>Recep&ccedil;&atilde;o</option>
-                            <option>Seguran&ccedil;a</option>
-                            <option>Manuten&ccedil;&atilde;o operacional</option>
-                            <option>Outro</option>
+                            <option value="Portaria">Portaria</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Zeladoria">Zeladoria</option>
+                            <option value="Seguranca">Seguran&ccedil;a</option>
+                            <option value="Administrativo">Administrativo</option>
                         </select>
+
+                        <label for="ticket-priority">Prioridade</label>
+                        <select id="ticket-priority" name="Prioridade" required>
+                            <option value="">Selecione</option>
+                            <option value="Baixa">Baixa</option>
+                            <option value="Media">M&eacute;dia</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Urgente">Urgente</option>
+                        </select>
+
+                        <label for="ticket-subject">Assunto</label>
+                        <input id="ticket-subject" name="Assunto" type="text" placeholder="Resumo do chamado" required>
 
                         <label for="ticket-description">Descri&ccedil;&atilde;o do chamado</label>
                         <textarea id="ticket-description" name="Descricao do chamado" rows="5" placeholder="Descreva o que precisa ser resolvido" required></textarea>
 
                         <button type="submit">Enviar chamado</button>
-                        <p id="ticket-status" class="form-status" aria-live="polite">Enviaremos por e-mail e abriremos uma mensagem no WhatsApp.</p>
+                        <p id="ticket-status" class="form-status" aria-live="polite">Voce recebera a confirmacao imediatamente apos a abertura.</p>
                     </form>
 
                     <form id="occurrence-form-wrap" class="quote-form panel-form hidden" action="https://formsubmit.co/mhfacilitiesseguranca@gmail.com" method="POST">
@@ -268,6 +285,7 @@
                         <input type="hidden" name="Nome do sindico" data-syndic-field="name">
                         <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
                         <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="WhatsApp do sindico" data-syndic-field="phone">
                         <input type="hidden" name="Condominio" data-syndic-field="condo">
 
                         <label for="occurrence-area">&Aacute;rea da ocorr&ecirc;ncia</label>
@@ -295,6 +313,7 @@
                         <input type="hidden" name="Nome do sindico" data-syndic-field="name">
                         <input type="hidden" name="CPF do sindico" data-syndic-field="cpf">
                         <input type="hidden" name="Email do sindico" data-syndic-field="email">
+                        <input type="hidden" name="WhatsApp do sindico" data-syndic-field="phone">
                         <input type="hidden" name="Condominio" data-syndic-field="condo">
 
                         <label for="finance-message">Mensagem para o financeiro</label>
@@ -303,6 +322,30 @@
                         <button type="submit">Enviar ao financeiro</button>
                         <p class="form-status">O financeiro recebera seu nome, condom&iacute;nio e mensagem por e-mail.</p>
                     </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="admin-section">
+            <div class="admin-copy">
+                <p class="eyebrow">Painel administrativo</p>
+                <h2>Acompanhamento de chamados e notificacoes.</h2>
+                <p>Visualize chamados recebidos, status e historico de envio por e-mail e WhatsApp.</p>
+            </div>
+            <div class="admin-panel">
+                <div class="admin-toolbar">
+                    <button id="admin-refresh" class="button button-primary" type="button">Atualizar painel</button>
+                    <p id="admin-status" class="form-status" aria-live="polite"></p>
+                </div>
+                <div class="admin-grid">
+                    <div>
+                        <h3>Chamados recebidos</h3>
+                        <div id="admin-ticket-list" class="admin-list"></div>
+                    </div>
+                    <div>
+                        <h3>Historico de notificacoes</h3>
+                        <div id="admin-notification-list" class="admin-list"></div>
+                    </div>
                 </div>
             </div>
         </section>
