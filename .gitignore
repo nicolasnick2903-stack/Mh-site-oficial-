@@ -13,3 +13,6 @@ mh-facilities/nginx/certs/*.key
 Thumbs.db
 .vscode/
 *.swp
+
+# Local Netlify folder
+.netlify
