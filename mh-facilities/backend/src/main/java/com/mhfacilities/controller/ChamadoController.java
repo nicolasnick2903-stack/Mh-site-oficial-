@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mhfacilities.entity.Chamado;
 import com.mhfacilities.repository.ChamadoRepository;
 import com.mhfacilities.repository.NotificacaoRepository;
+import com.mhfacilities.repository.OrcamentoRepository;
 import com.mhfacilities.service.ChamadoService;
+import com.mhfacilities.service.OrcamentoService;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -25,17 +27,28 @@ import com.mhfacilities.service.ChamadoService;
 public class ChamadoController {
 
     private final ChamadoService chamadoService;
+    private final OrcamentoService orcamentoService;
     private final ChamadoRepository chamadoRepository;
     private final NotificacaoRepository notificacaoRepository;
+    private final OrcamentoRepository orcamentoRepository;
 
     public ChamadoController(
         ChamadoService chamadoService,
+        OrcamentoService orcamentoService,
         ChamadoRepository chamadoRepository,
-        NotificacaoRepository notificacaoRepository
+        NotificacaoRepository notificacaoRepository,
+        OrcamentoRepository orcamentoRepository
     ) {
         this.chamadoService = chamadoService;
+        this.orcamentoService = orcamentoService;
         this.chamadoRepository = chamadoRepository;
         this.notificacaoRepository = notificacaoRepository;
+        this.orcamentoRepository = orcamentoRepository;
+    }
+
+    @PostMapping("/orcamentos")
+    public ResponseEntity<OrcamentoResponse> criarOrcamento(@RequestBody CriarOrcamentoRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(OrcamentoResponse.from(orcamentoService.criar(request)));
     }
 
     @PostMapping("/chamados")
@@ -62,6 +75,14 @@ public class ChamadoController {
         return notificacaoRepository.findAllByOrderByCreatedAtDesc()
             .stream()
             .map(NotificacaoResponse::from)
+            .toList();
+    }
+
+    @GetMapping("/admin/orcamentos")
+    public List<OrcamentoResponse> listarOrcamentos() {
+        return orcamentoRepository.findAllByOrderByCreatedAtDesc()
+            .stream()
+            .map(OrcamentoResponse::from)
             .toList();
     }
 
