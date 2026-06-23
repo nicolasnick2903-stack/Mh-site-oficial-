@@ -11,24 +11,17 @@ on:
 
 jobs:
   deploy:
-    name: Netlify Deploy
+    name: Firebase Hosting Deploy
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Deploy para Netlify
-        uses: nwtgck/actions-netlify@v3.0
-        with:
-          publish-dir: "./mh-facilities/frontend"
-          production-branch: main
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy ${{ github.sha }} — ${{ github.event.head_commit.message }}"
-          enable-pull-request-comment: false
-          enable-commit-comment: true
-          overwrites-pull-request-comment: false
+      - name: Instalar Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy para Firebase Hosting
+        run: firebase deploy --only hosting:site-oficial --token "$FIREBASE_TOKEN" --project mh-funcionario
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        timeout-minutes: 5
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

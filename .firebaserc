@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "mh-funcionario"
+  },
+  "targets": {
+    "mh-funcionario": {
+      "hosting": {
+        "site-oficial": ["mh-site-oficial"]
+      }
+    }
+  }
+}
