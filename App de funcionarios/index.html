@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#050505">
+  <title>App Operacional | MH Facilities &amp; Segurança</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <img src="../mh-facilities/frontend/assets/logo.png" alt="MH" class="sb-logo">
+      <div class="sb-brand-text">
+        <strong>MH Facilities</strong>
+        <small>App Operacional</small>
+      </div>
+    </div>
+    <nav id="sb-nav"></nav>
+  </aside>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="app-layout">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button id="sb-toggle" class="sb-toggle" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="topbar-title" id="topbar-title">Dashboard</span>
+      <div class="topbar-end">
+        <span id="top-date"></span>
+        <span class="badge-user">MH Admin</span>
+      </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main id="main-content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-head">
+          <div>
+            <p class="eyebrow">MH Facilities &amp; Segurança</p>
+            <h1>Painel Operacional</h1>
+            <p class="muted">Central de gestão de operações, RH, clientes e financeiro.</p>
+          </div>
+        </div>
+        <div class="metric-grid" id="dash-metrics"></div>
+        <div class="dash-shortcuts" id="dash-shortcuts"></div>
+      </div>
+
+      <!-- PÁGINAS DOS MÓDULOS (preenchidas pelo JS) -->
+      <div class="page" id="page-os"></div>
+      <div class="page" id="page-checklist"></div>
+      <div class="page" id="page-relatorio"></div>
+      <div class="page" id="page-ocorrencia"></div>
+      <div class="page" id="page-funcionarios"></div>
+      <div class="page" id="page-avaliacao"></div>
+      <div class="page" id="page-escala"></div>
+      <div class="page" id="page-faturamento"></div>
+      <div class="page" id="page-recibo"></div>
+      <div class="page" id="page-clientes"></div>
+      <div class="page" id="page-pesquisa"></div>
+
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay hidden" id="modal-overlay">
+    <div class="modal-box" id="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-hd">
+        <h2 id="modal-title">Novo Registro</h2>
+        <button class="modal-close" id="modal-close" aria-label="Fechar">&#x2715;</button>
+      </div>
+      <div class="modal-bd" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ÁREA DE IMPRESSÃO -->
+  <div id="print-area" class="print-area hidden"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

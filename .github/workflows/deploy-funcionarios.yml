@@ -1,0 +1,23 @@
+name: Deploy App Funcionários — MH Facilities
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "App de funcionarios/**"
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Vercel Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Deploy para Vercel
+        run: npx vercel deploy --prod --token "${{ secrets.VERCEL_TOKEN }}" --yes
+        working-directory: "App de funcionarios"
