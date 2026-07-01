@@ -217,6 +217,15 @@ a {
     object-fit: cover;
 }
 
+.hero-carousel .hero-slide {
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+
+.hero-carousel .hero-slide.is-active {
+    opacity: 1;
+}
+
 .hero-overlay {
     background: linear-gradient(90deg, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.72) 48%, rgba(0, 0, 0, 0.36));
 }

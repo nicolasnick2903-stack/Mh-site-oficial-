@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     initMenu();
     initReveal();
+    initHeroCarousel();
     initQuoteForm();
     initSyndicPortal();
     initAdminPanel();
@@ -60,6 +61,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }, { threshold: 0.12 });
 
         items.forEach(function (item) { observer.observe(item); });
+    }
+
+    // ── CARROSSEL DO HERO ────────────────────────────────────────────────────
+
+    function initHeroCarousel() {
+        document.querySelectorAll("[data-hero-carousel]").forEach(function (carousel) {
+            var slides = carousel.querySelectorAll(".hero-slide");
+            var interval = parseInt(carousel.getAttribute("data-hero-interval"), 10) || 6000;
+            var current = Math.max(0, Array.prototype.findIndex.call(slides, function (slide) {
+                return slide.classList.contains("is-active");
+            }));
+
+            if (slides.length < 2) return;
+
+            setInterval(function () {
+                slides[current].classList.remove("is-active");
+                current = (current + 1) % slides.length;
+                slides[current].classList.add("is-active");
+            }, interval);
+        });
     }
 
     // ── FORMULÁRIO DE ORÇAMENTO ──────────────────────────────────────────────
