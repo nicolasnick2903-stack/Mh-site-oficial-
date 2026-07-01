@@ -219,6 +219,7 @@ a {
 
 .hero-carousel .hero-slide {
     opacity: 0;
+    object-position: 32% 38%;
     transition: opacity 1.2s ease;
 }
 
